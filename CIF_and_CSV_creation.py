@@ -7,21 +7,21 @@ from pymatgen.io.cif import CifWriter
 import os
 import pandas as pd
 
-key = "1oCZOPAFrvxwXD5QlNiaTIo9gQmPB9Ll"
+api_key = "1oCZOPAFrvxwXD5QlNiaTIo9gQmPB9Ll" # API KEY of Materials Project
 
-with MPRester(key) as mpr:
+with MPRester(api_key) as mpr:
     docs = mpr.materials.summary.search(
         elements=["O"],
         fields=["material_id","formation_energy_per_atom","formula_pretty","elements","energy_above_hull","nelements","structure"]
     )
-print(len(docs))
+print(len(docs)) # No of Oxides obtained from Materials Project using API query
 
 dict = [{"material_id":doc.material_id.replace('mp-',''),"forumula_pretty":doc.formula_pretty,"formation_energy_per_atom":doc.formation_energy_per_atom,  "energy_above_hull":doc.energy_above_hull} for doc in docs]
 df = pd.DataFrame(dict)
 df.to_csv('all_oxides_with_o2_no_hull_criteria.csv', index = False)
 
 docs = [doc for doc in docs if doc.nelements != 1]
-print(len(docs))
+print(len(docs)) # No of oxides after removal of O2
 
 dict = [{"material_id":doc.material_id.replace('mp-',''),"forumula_pretty":doc.formula_pretty,"formation_energy_per_atom":doc.formation_energy_per_atom,  "energy_above_hull":doc.energy_above_hull} for doc in docs]
 df = pd.DataFrame(dict)
@@ -30,12 +30,14 @@ df.to_csv('all_oxides_without_o2_no_hull_criteria.csv', index = False)
 
 
 excluded_elements = ["H", "C", "N", "P", "S", "Se", "F", "Cl", "Br", "I", "At", "Te", "Po", "He", "Ne", "Ar", "Kr", "Xe", "Rn", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "B", "Fl", "Mc", "Lv", "Ts", "Og"]
+
 material_id_with_mp = []
 material_id = []
 formation_energy = []
 formula_pretty=[]
 energy_above_hull=[]
 excluded_docs=[]
+
 for doc in docs:
     elements_in_doc = [doc.elements[i].value for i in range(len(doc.elements))]
     num_of_atoms = Composition(doc.formula_pretty).num_atoms
@@ -54,7 +56,7 @@ df = pd.DataFrame(data)
 df.to_csv('filtered_oxides.csv', index=False)
 df.drop(columns=['formula_pretty','energy_above_hull'], inplace=True)
 
-df.to_csv('id_prop.csv', index=False,header=False)
+df.to_csv('id_prop.csv', index=False,header=False) # csv format required for cgcnn without any header
 
 
 output_dir = 'data'

@@ -41,7 +41,7 @@ for index, element in enumerate(property_vector):
                 
 
 
-file_path = os.path.join('MyData', 'atom_init.json')
+file_path = os.path.join('data', 'atom_init.json')
 os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
 with open(file_path, 'w') as json_file:

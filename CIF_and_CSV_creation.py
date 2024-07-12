@@ -59,8 +59,8 @@ df.drop(columns=['formula_pretty','energy_above_hull'], inplace=True)
 df.to_csv('id_prop.csv', index=False,header=False) # csv format required for cgcnn without any header
 
 
-output_dir = 'data'
-os.makedirs(output_dir, exist_ok=True)
+output_dir = 'data' # all cifs will be stored in the 'data' folder
+os.makedirs(output_dir, exist_ok=True) # to create the 'd'ata' folder unless it is already there
 
 for doc in excluded_docs:
     try:
